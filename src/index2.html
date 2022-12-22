@@ -1,0 +1,241 @@
+<!doctype html>
+<!--www.shinobi.video-->
+<html lang="en-US">
+
+<head>
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta charset="UTF-8">
+    <title></title>
+    <!--FLV Live Player-->
+    <script src="/lib/attiartsp.js"></script>
+    <script src="/lib/flv.js"></script>
+    <script src="https://code.jquery.com/jquery-1.10.2.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/socket.io/2.1.0/socket.io.js"></script>
+    <script src="/lib/jsmpeg.pipe.js"></script>
+
+    <link rel="stylesheet" href="https://stackpath.bootstrapcdn.com/bootstrap/4.1.0/css/bootstrap.min.css" integrity="sha384-9gVQ4dYFwwWSjIDZnLEWnxCjeSWFphJiwGPXr1jddIhOegiu1FwO5qRGvFXOdJZ4"
+        crossorigin="anonymous">
+    <script src="https://stackpath.bootstrapcdn.com/bootstrap/4.1.0/js/bootstrap.min.js" integrity="sha384-uefMccjFJAIv6A+rW+L4AHf99KvxDjWSu1z9VI8SKNVmz4sk7buKt/6v9KI65qnm"
+        crossorigin="anonymous"></script>
+    <style>
+        #videoElement1:-webkit-full-screen,
+        #videoElement2:-webkit-full-screen,
+        #videoElement3:-webkit-full-screen,
+        #videoElement4:-webkit-full-screen {
+            width: auto;
+            height: 100%;
+        }
+		canvas {
+			max-height:340px;
+		}
+    </style>
+</head>
+
+<body>
+    <div class='content'>
+	<p>test</p>
+	<p1>test</p1>
+	</div>
+	
+	
+    <div class="row">
+        <div class="col-sm-6">
+            <div class="card text-center ">
+                <div class="card-header text-white bg-dark">
+                    Camera 1
+                </div>
+                <div class="card-body">
+                    <p class="card-text">
+                        <canvas id="videoElement1"></canvas>
+                    </p>
+                    <a href="#" id="videoElement1Enlarge" class="btn btn-dark btn-block">Enlarge</a>
+                </div>
+            </div>
+        </div>
+        <div class="col-sm-6">
+            <div class="card text-center">
+                <div class="card-header text-white bg-dark">
+                    Camera 2
+                </div>
+                <div class="card-body">
+                    <p class="card-text">
+                        <canvas id="videoElement2"></canvas>
+                    </p>
+                    <a href="#" id="videoElement2Enlarge" class="btn btn-dark btn-block">Enlarge</a>
+                </div>
+            </div>
+        </div>
+    </div>
+    <div class="row">
+        <div class="col-sm-6">
+            <div class="card text-center">
+                <div class="card-header text-white bg-dark">
+                    Camera 3
+                </div>
+                <div class="card-body">
+                    <p class="card-text">
+                        <canvas id="videoElement3"></canvas>
+                    </p>
+                    <a href="#" id="videoElement3Enlarge" class="btn btn-dark btn-block">Enlarge</a>
+                </div>
+            </div>
+        </div>
+        <div class="col-sm-6">
+            <div class="card text-center">
+                <div class="card-header text-white bg-dark">
+                    Camera 4
+                </div>
+                <div class="card-body">
+                    <p class="card-text">
+                        <canvas id="videoElement4"></canvas>
+                    </p>
+                    <a href="#" id="videoElement4Enlarge" class="btn btn-dark btn-block">Enlarge</a>
+                </div>
+            </div>
+        </div>
+    </div>
+    <script>
+	
+	 
+	
+	
+	//window.streamServerBaseUrl = "https://rtsp-15-min.herokuapp.com";
+	    window.streamServerBaseUrl = "http://127.0.0.1:9898";
+        if (flvjs.isSupported()) {
+			
+            /*
+			"https://rtsp-15-min.herokuapp.com"
+			 "http://127.0.0.1:5000"
+			
+			var cameraOptions1 = {
+                username: 'admin',
+                password: 'a1234',
+                host: '82.81.60.40',
+                port: '45000',
+                cameraType: 'AVTECH',
+                channel: '1',
+                useWebSocket: true
+            };
+
+            var cameraOptions2 = {
+                username: 'admin',
+                password: 'a1234',
+                host: '82.81.60.40',
+                port: '45000',
+                cameraType: 'AVTECH',
+                channel: '2',
+                useWebSocket: true
+            };
+
+            var cameraOptions3 = {
+                username: 'admin',
+                password: 'a1234',
+                host: '82.81.60.40',
+                port: '45000',
+                cameraType: 'AVTECH',
+                channel: '3',
+                useWebSocket: true
+            };
+
+            var cameraOptions4 = {
+                username: 'admin',
+                password: 'a1234',
+                host: '82.81.60.40',
+                port: '45000',
+                cameraType: 'AVTECH',
+                channel: '4',
+                useWebSocket: true
+            };
+			
+			$camerasChannels[$index]=array ("username" =>  $username ,
+	              "password"  =>  $password,
+	              "host"  => $ExternalIP,
+	              "port" => $ExternalPort,
+	              "cameraType" => $ctype,
+				  "custnumber" => $custnumber,
+	              "channel" => $index,
+				  "channlrecord" => $channlrecord,
+				  "useWebSocket" => true,  );
+			
+			
+			
+			
+			
+			*/
+            var cameraOptions1 = {
+                username: 'admin',
+                password: 'hvi12345',
+                host: '188.120.155.166',
+                port: '554',
+                cameraType: 'FF-HIKVISIONNVR-SUB',
+                channel: '4', 
+				custnumber:'90002',
+	            channlrecord:'0',
+				 
+                useWebSocket: true
+            };
+
+            var cameraOptions2 = {
+                username: 'admin',
+                password: 'hvi12345',
+                host: '188.120.155.166',
+                port: '554',
+                cameraType: 'FF-HIKVISIONNVR-SUB',
+                channel: '3', 
+				custnumber:'90001',
+	            channlrecord:'0',
+				
+                useWebSocket: true
+            };
+
+            var cameraOptions3 = {
+                username: 'admin',
+                password: 'hvi12345',
+                host: '188.120.155.166',
+                port: '554',
+                cameraType: 'FF-HIKVISIONNVR-SUB',
+                channel: '1',
+				
+				custnumber:'90000',
+	            channlrecord:'0',
+				
+                useWebSocket: true
+            };
+
+            var cameraOptions4 = {
+                username: 'admin',
+                password: 'a1234',
+                host: '37.142.115.48',
+                port: '554',
+                cameraType: 'DH',
+                channel: '8',
+				custnumber:'90001',
+	            channlrecord:'0',
+                useWebSocket: false
+            }
+             var a='';
+             connectStreamWS("videoElement1", cameraOptions1,window.streamServerBaseUrl,a);
+             connectStreamWS("videoElement2", cameraOptions2,window.streamServerBaseUrl,a);
+			 connectStreamWS("videoElement3", cameraOptions3,window.streamServerBaseUrl,a);
+			 connectStreamWS("videoElement4", cameraOptions4,window.streamServerBaseUrl,a);
+            
+
+        }
+		
+		 var counttick=300000;
+		 setTimeout('window.close()',counttick);
+		
+        setTimeout('quitBox()',counttick);
+		
+        function quitBox()
+        {   
+    
+         open(location, '_self').close();
+      
+         return false;   
+        }
+		
+		
+		
+    </script>
+</body>

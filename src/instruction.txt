@@ -1,0 +1,13 @@
+NPM_CONFIG_PRODUCTION
+YARN_PRODUCTION
+https://github.com/jonathanong/heroku-buildpack-ffmpeg-latest.git
+https://github.com/heroku/heroku-buildpack-nodejs#v83
+
+heroku config:set WEB_MEMORY=1024
+heroku config:add TZ="Asia/Jerusalem"
+
+>git push -u origin master
+
+git add --all
+git commit -m 'instruction file'
+git push

@@ -1,0 +1,116 @@
+const qeventQuery = async (con, d1, d2, d3, d4, d5, d6, d7, d8) {
+    var qevents = "SELECT * FROM   eventcodes  WHERE `MokedCcode`='" + d1 + "'" + " AND `mkag`='" + d2 + "'" + " AND `WCODE`='" + d3 + d7 + "'";
+    return new Promise(function (resolve, reject) {
+        con.query(qevents, function (err, rows, fields) {
+            if (rows.length > 0) {
+                console.log(rows[0].WCODE);
+                TCPSERVER.write("$" + d2 + "!----!" + d3 + d7 + "!" + "*" + String.fromCharCode(13));
+                console.log('result');
+                resolve(true);
+            } else {
+                resolve(false);
+            }
+        })
+    })
+}
+const customCameraQuery = async (con, d1, d2, d3, d4, d5, d6, d7, d8) {
+    var qevents = "SELECT * FROM custcamera WHERE `internalip`='" + d4 + "'" + " AND `httpport`='" + d5 + "' LIMIT 1";
+    return new Promise(function (resolve, reject) {
+        con.query(qevents, function (err, rows, fields) {
+            if (rows.length > 0) {
+                camera_name = rows[0].camera_name;
+                console.log(camera_name);
+                resolve(camera_name)
+            } else {
+                TCPSERVER.write("$" + d2 + "!----!" + d3 + d7 + "!" + "*" + String.fromCharCode(13));
+                resolve(false);
+            }
+        })
+    })
+}
+
+const customDescriptionQuery = async (con, d1, d2, d3, d4, d5, d6, d7, d8) {
+    var qevents = "SELECT * FROM  generaleventcodes WHERE `Descriptiontable` LIKE '%MOTION%' AND `WCODE`='" + d3 + "'";
+
+    return new Promise(function (resolve, reject) {
+        con.query(qevents, function (err, rows, fields) {
+            if (rows.length > 0) {
+
+                wcode = rows[0].WCODE;
+                discode = rows[0].DISCODE;
+                marea = rows[0].AREA;
+                color = rows[0].COLOR;
+                priority = rows[0].PRIORITY;
+                resolve({
+                    wcode,
+                    discode,
+                    marea,
+                    color,
+                    priority
+                })
+            } else {
+                TCPSERVER.write("$" + d2 + "!----!" + d3 + d7 + "!" + "*" + String.fromCharCode(13));
+                console.log('no generaleventcodes');
+                resolve(false)
+            }
+
+        })
+    })
+}
+
+const customInsertRowQuery = async (con, d1, d2, d3, d4, d5, d6, d7, d8, descriptionData, camera_name) {
+    var wcode = descriptionData.wcode;
+    var discode = descriptionData.discode;
+    var marea = descriptionData.marea;
+    var color = descriptionData.color;
+    var priority = descriptionData.priority;
+    var camera_name = camera_name;
+    var qevents = "INSERT INTO  eventcodes   (`MokedCcode`,`mkag`, `WCODE`, `DISCODE`, `AREA`,`COLOR`, `PRIORITY`,`camera_name`, `camera_channel`) VALUES ('" + d1 + "','" + d2 + "','" + wcode + d7 + "','" + discode + "','" + marea + "','" + color + "','" + priority + "','" + camera_name + "','" + d7 + "')";
+
+    return new Promise(function (resolve, reject) {
+        con.query(qevents, function (err, rows, fields) {
+            if (rows.length > 0) {
+                resolve(true)
+            } else {
+                resolve(false);
+            }
+        })
+    })
+}
+const connectDB = async function (con) {
+    return new Promise(function (resolve, reject) {
+        con.connect(function (err) {
+            if (err) {
+                resolve(false)
+            } else {
+                resolve(true);
+            }
+        })
+    });
+}
+const checkifwcodeexist = async function (d1, d2, d3, d4, d5, d6, d7, d8) {
+
+    const ZERO = '0';
+    var resultRows = Array();
+    con = createDBConnection();
+    const isConnected = await connectDB();
+    if (isConnected) {
+        const customEvents = await qeventQuery(con, d2, d3, d4, d5, d6, d7, d8);
+        if (customEvents) {
+            const cameraData = await customCameraQuery(con, d1, d2, d3, d4, d5, d6, d7, d8);
+            if (!cameraData) {
+                console.log('There is no camera');
+            }
+            const generalEventCodes = await customDescriptionQuery(con, d1, d2, d3, d4, d5, d6, d7, d8);
+            if (!generalEventCodes) {
+                console.log("There is no general event codes");
+            }
+            const insertQuery = await customCameraQuery(con, d1, d2, d3, d4, d5, d6, d7, d8, generalEventCodes, cameraData);
+            if (insertQuery) {
+                console.log("Row inserted");
+            }
+        }
+    }
+    console.log('fin');
+    return ZERO;
+}

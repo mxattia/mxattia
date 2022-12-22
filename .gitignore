@@ -1,0 +1,16 @@
+node_modules
+*.flv
+records
+scrx
+bak
+*.bat
+*.zip
+dist
+*old*
+*.mp4
+develop
+
+
+
+
+
